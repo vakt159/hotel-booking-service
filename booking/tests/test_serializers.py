@@ -1,6 +1,5 @@
 from datetime import date, timedelta
 from django.test import TestCase
-from rest_framework.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
 from booking.serializers import BookingCreateSerializer
@@ -83,5 +82,5 @@ class BookingCreateSerializerTest(TestCase):
         booking = serializer.save()
 
         self.assertEqual(booking.user, self.user)
-        self.assertEqual(booking.price_per_night, self.room.price)
+        self.assertEqual(booking.price_per_night, self.room.price_per_night)
         self.assertEqual(booking.status, Booking.BookingStatus.BOOKED)
