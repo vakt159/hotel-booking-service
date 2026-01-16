@@ -1,8 +1,11 @@
-import pytest
 from decimal import Decimal
-from payment.serializers import PaymentSerializer
-from payment.models import Payment
+
+import pytest
+
 from booking.models import Booking
+from payment.models import Payment
+from payment.serializers import PaymentSerializer
+
 
 @pytest.mark.django_db
 def test_payment_serializer_serialization():

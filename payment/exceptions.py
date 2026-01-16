@@ -1,4 +1,3 @@
-from typing import Optional
 
 
 class PendingPaymentExists(Exception):
@@ -6,8 +5,8 @@ class PendingPaymentExists(Exception):
 
     def __init__(
             self,
-            booking_id: Optional[int] = None,
-            message: Optional[str] = None
+            booking_id: int | None = None,
+            message: str | None = None
     ) -> None:
         if message is None:
             message = f"Pending payment already exists for booking {booking_id}" if booking_id else "Pending payment already exists."

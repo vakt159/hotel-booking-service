@@ -1,7 +1,11 @@
 from django.urls import path
 
-from payment.views import StripeWebhook, PaymentSuccessView, PaymentCancelView, \
-    PaymentListView
+from payment.views import (
+    PaymentCancelView,
+    PaymentListView,
+    PaymentSuccessView,
+    StripeWebhook,
+)
 
 app_name = "payments"
 
