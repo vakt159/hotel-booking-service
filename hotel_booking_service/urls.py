@@ -40,4 +40,7 @@ urlpatterns = [
         name="swagger-ui",
     ),
     path("api/payments/", include("payment.urls"), name="payments"),
+
+    path("__debug__/", include("debug_toolbar.urls")),
+
 ]
