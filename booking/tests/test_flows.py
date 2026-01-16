@@ -23,6 +23,7 @@ class BookingFlowsTests(APITestCase):
             number="101",
             type="Single",
             price_per_night=100,
+            capacity=2,
         )
 
     def create_booking(self, booking_status=Booking.BookingStatus.BOOKED, check_in_offset_days=5):
@@ -56,7 +57,10 @@ class BookingFlowsTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_check_in_ok(self):
-        booking = self.create_booking(booking_status=Booking.BookingStatus.BOOKED)
+        booking = self.create_booking(
+            booking_status=Booking.BookingStatus.BOOKED,
+            check_in_offset_days=0,
+        )
 
         url = reverse("booking:booking-check-in", args=[booking.id])
         response = self.client.post(url)
