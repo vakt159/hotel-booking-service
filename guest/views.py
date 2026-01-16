@@ -1,18 +1,17 @@
+# Create your views here.
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from guest.serializers import UserSerializer
 
-# Create your views here.
-from drf_spectacular.utils import extend_schema, OpenApiResponse
-
 
 @extend_schema(
     summary="User registration",
     description=(
-            "Creates a new user account.\n\n"
-            "This endpoint is public and does not require authentication."
+        "Creates a new user account.\n\n"
+        "This endpoint is public and does not require authentication."
     ),
     request=UserSerializer,
     responses={
@@ -27,13 +26,14 @@ class CreateUserView(generics.CreateAPIView):
 @extend_schema(
     summary="Retrieve or update current user",
     description=(
-            "Returns or updates the authenticated user's profile.\n\n"
-            "Authentication: JWT required."
+        "Returns or updates the authenticated user's profile.\n\n"
+        "Authentication: JWT required."
     ),
     responses={
         200: UserSerializer,
         401: OpenApiResponse(
-            description="Authentication credentials were not provided"),
+            description="Authentication credentials were not provided"
+        ),
     },
 )
 class ManageUserView(generics.RetrieveUpdateAPIView):

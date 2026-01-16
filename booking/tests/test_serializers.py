@@ -1,23 +1,20 @@
 from datetime import date, timedelta
-from django.test import TestCase
-from django.contrib.auth import get_user_model
 
-from booking.serializers import BookingCreateSerializer
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+
 from booking.models import Booking
+from booking.serializers import BookingCreateSerializer
 from room.models import Room
 
 
 class BookingCreateSerializerTest(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            email="user@test.com",
-            password="password123"
+            email="user@test.com", password="password123"
         )
         self.room = Room.objects.create(
-            number="101",
-            type="DOUBLE",
-            price_per_night=100,
-            capacity=2
+            number="101", type="DOUBLE", price_per_night=100, capacity=2
         )
 
     def test_check_in_date_in_past_fails(self):

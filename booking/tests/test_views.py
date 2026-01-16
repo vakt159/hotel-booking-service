@@ -1,8 +1,8 @@
+from datetime import date, timedelta
+
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.urls import reverse
-from datetime import date, timedelta
-from django.contrib.auth import get_user_model
 
 from booking.models import Booking
 from room.models import Room
@@ -11,20 +11,15 @@ from room.models import Room
 class BookingViewSetTest(APITestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            email="user@test.com",
-            password="password123"
+            email="user@test.com", password="password123"
         )
 
         self.admin = get_user_model().objects.create_superuser(
-            email="admin@test.com",
-            password="adminpass123"
+            email="admin@test.com", password="adminpass123"
         )
 
         self.room = Room.objects.create(
-            number="101",
-            type="DOUBLE",
-            price_per_night=100,
-            capacity=2
+            number="101", type="DOUBLE", price_per_night=100, capacity=2
         )
 
         self.user_booking = Booking.objects.create(
@@ -73,10 +68,7 @@ class BookingViewSetTest(APITestCase):
     def test_filter_by_user_id(self):
         self.client.force_authenticate(user=self.admin)
 
-        response = self.client.get(
-            self.list_url,
-            {"user": self.user.id}
-        )
+        response = self.client.get(self.list_url, {"user": self.user.id})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)

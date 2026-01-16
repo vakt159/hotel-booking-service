@@ -1,8 +1,11 @@
-import pytest
 from decimal import Decimal
-from payment.serializers import PaymentSerializer
-from payment.models import Payment
+
+import pytest
+
 from booking.models import Booking
+from payment.models import Payment
+from payment.serializers import PaymentSerializer
+
 
 @pytest.mark.django_db
 def test_payment_serializer_serialization():
@@ -14,7 +17,7 @@ def test_payment_serializer_serialization():
         type=Payment.PaymentType.BOOKING,
         session_url="https://example.com/session",
         session_id="sess_123",
-        money_to_pay=Decimal("150.00")
+        money_to_pay=Decimal("150.00"),
     )
 
     serializer = PaymentSerializer(payment)
@@ -32,9 +35,7 @@ def test_payment_serializer_serialization():
 def test_payment_serializer_deserialization_valid():
     booking = Booking.objects.create(guest_name="John Doe")
 
-    valid_data = {
-        "booking": booking.id
-    }
+    valid_data = {"booking": booking.id}
 
     serializer = PaymentSerializer(data=valid_data)
     assert serializer.is_valid()
@@ -42,7 +43,7 @@ def test_payment_serializer_deserialization_valid():
         type=Payment.PaymentType.BOOKING,
         session_url="https://example.com/session",
         session_id="sess_123",
-        money_to_pay=Decimal("100.00")
+        money_to_pay=Decimal("100.00"),
     )
     assert payment.booking == booking
     assert payment.status == Payment.PaymentStatus.PENDING
@@ -50,9 +51,7 @@ def test_payment_serializer_deserialization_valid():
 
 @pytest.mark.django_db
 def test_payment_serializer_deserialization_invalid():
-    invalid_data = {
-        "booking": None
-    }
+    invalid_data = {"booking": None}
 
     serializer = PaymentSerializer(data=invalid_data)
     assert not serializer.is_valid()

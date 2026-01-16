@@ -2,7 +2,6 @@ from datetime import date, timedelta
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
@@ -17,8 +16,10 @@ def rooms_url():
 def room_detail_url(room_id: int) -> str:
     return reverse("room:rooms-detail", args=[room_id])
 
-def room_calendar_url(room_id:int) -> str:
+
+def room_calendar_url(room_id: int) -> str:
     return reverse("room:rooms-get-calendar", args=[room_id])
+
 
 def create_user(**params):
     defaults = {
@@ -186,6 +187,7 @@ class AdminRoomApiTests(APITestCase):
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]["number"], "1102")
 
+
 class RoomCalendarApiTests(APITestCase):
     def setUp(self):
         self.client = APIClient()
@@ -234,6 +236,7 @@ class RoomCalendarApiTests(APITestCase):
         res = self.client.get(self.url, {"date_from": date_from, "date_to": date_to})
         self.assertEqual(res.status_code, 400)
         self.assertIn("detail", res.data)
+
 
 class PublicRoomCalendarApiTests(APITestCase):
     def setUp(self):

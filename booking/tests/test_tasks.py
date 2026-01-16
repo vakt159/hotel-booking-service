@@ -1,12 +1,12 @@
+from datetime import timedelta
+
 from django.test import TestCase
 from django.utils.timezone import localdate
-from datetime import timedelta
-from unittest.mock import patch
 
 from booking.models import Booking
-from booking.tasks import mark_no_show_bookings, notify_no_show_telegram
-from room.models import Room
+from booking.tasks import mark_no_show_bookings
 from guest.models import Guest
+from room.models import Room
 
 
 class MarkNoShowBookingsTestCase(TestCase):
@@ -15,17 +15,14 @@ class MarkNoShowBookingsTestCase(TestCase):
     def setUp(self):
         """Create test data"""
         self.user = Guest.objects.create_user(
-            email='test@example.com',
-            password='testpass123',
-            first_name='John',
-            last_name='Doe'
+            email="test@example.com",
+            password="testpass123",
+            first_name="John",
+            last_name="Doe",
         )
 
         self.room = Room.objects.create(
-            number='101',
-            type=Room.RoomType.SINGLE,
-            price_per_night=100.00,
-            capacity=1
+            number="101", type=Room.RoomType.SINGLE, price_per_night=100.00, capacity=1
         )
 
     def test_marks_past_bookings_as_no_show(self):
@@ -36,7 +33,7 @@ class MarkNoShowBookingsTestCase(TestCase):
             check_in_date=localdate() - timedelta(days=1),
             check_out_date=localdate() + timedelta(days=2),
             status=Booking.BookingStatus.BOOKED,
-            price_per_night=100.00
+            price_per_night=100.00,
         )
 
         result = mark_no_show_bookings()
@@ -53,7 +50,7 @@ class MarkNoShowBookingsTestCase(TestCase):
             check_in_date=localdate(),
             check_out_date=localdate() + timedelta(days=3),
             status=Booking.BookingStatus.BOOKED,
-            price_per_night=100.00
+            price_per_night=100.00,
         )
 
         mark_no_show_bookings()
@@ -69,7 +66,7 @@ class MarkNoShowBookingsTestCase(TestCase):
             check_in_date=localdate() + timedelta(days=1),
             check_out_date=localdate() + timedelta(days=4),
             status=Booking.BookingStatus.BOOKED,
-            price_per_night=100.00
+            price_per_night=100.00,
         )
 
         mark_no_show_bookings()
@@ -86,7 +83,7 @@ class MarkNoShowBookingsTestCase(TestCase):
                 check_in_date=localdate() - timedelta(days=i + 1),
                 check_out_date=localdate() + timedelta(days=2),
                 status=Booking.BookingStatus.BOOKED,
-                price_per_night=100.00
+                price_per_night=100.00,
             )
 
         result = mark_no_show_bookings()

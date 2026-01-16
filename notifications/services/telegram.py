@@ -1,4 +1,5 @@
 import os
+
 import requests
 from dotenv import load_dotenv
 
@@ -17,14 +18,11 @@ def send_message_to_all(text: str) -> None:
     subscribers = TelegramSubscriber.objects.all()
 
     for sub in subscribers:
-        try:
-            requests.post(
-                f"{BASE_URL}/sendMessage",
-                json={
-                    "chat_id": sub.chat_id,
-                    "text": text,
-                },
-                timeout=10,
-            )
-        except Exception as e:
-            print(f"Failed to send to {sub.chat_id}: {e}")
+        requests.post(
+            f"{BASE_URL}/sendMessage",
+            json={
+                "chat_id": sub.chat_id,
+                "text": text,
+            },
+            timeout=10,
+        )

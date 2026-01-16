@@ -7,6 +7,7 @@ CREATE_USER_URL = reverse("guest:register")
 ME_URL = reverse("guest:manage")
 LOGIN_URL = reverse("guest:login")
 
+
 def create_user(**params):
     return get_user_model().objects.create_user(**params)
 
@@ -53,6 +54,7 @@ class UnauthenticatedUserApiTests(APITestCase):
         self.assertFalse(
             get_user_model().objects.filter(email=payload["email"]).exists()
         )
+
     def test_cannot_set_is_staff_on_register(self):
         payload = {
             "email": "user@test.com",
@@ -89,6 +91,7 @@ class UnauthenticatedUserApiTests(APITestCase):
         payload["email"] = "wrong@email.com"
         res = self.client.post(LOGIN_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
 
 class AuthenticatedUserApiTests(APITestCase):
     """Tests for authenticated user API"""

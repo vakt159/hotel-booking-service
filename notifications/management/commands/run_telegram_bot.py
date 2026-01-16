@@ -1,25 +1,20 @@
-import os
 import asyncio
-
-from dotenv import load_dotenv
-load_dotenv()
+import os
 
 import django
-from django.core.management.base import BaseCommand
-
 from aiogram import Bot, Dispatcher
 from aiogram.filters import CommandStart
 from aiogram.types import Message
-
 from asgiref.sync import sync_to_async
-
-os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE",
-    "hotel_booking_service.settings"
-)
-django.setup()
+from django.core.management.base import BaseCommand
+from dotenv import load_dotenv
 
 from notifications.models import TelegramSubscriber
+
+load_dotenv()
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hotel_booking_service.settings")
+django.setup()
 
 
 class Command(BaseCommand):
@@ -41,13 +36,11 @@ class Command(BaseCommand):
         async def start_handler(message: Message):
             chat_id = message.chat.id
 
-            await sync_to_async(
-                TelegramSubscriber.objects.get_or_create
-            )(chat_id=chat_id)
-
-            await message.answer(
-                "✅ You are subscribed to booking notifications!"
+            await sync_to_async(TelegramSubscriber.objects.get_or_create)(
+                chat_id=chat_id
             )
+
+            await message.answer("✅ You are subscribed to booking notifications!")
 
         self.stdout.write(self.style.SUCCESS("🤖 Telegram bot started"))
         await dp.start_polling(bot)

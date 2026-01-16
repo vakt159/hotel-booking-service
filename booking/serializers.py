@@ -1,6 +1,7 @@
 from datetime import date
 
 from rest_framework import serializers
+
 from booking.models import Booking
 
 
@@ -47,13 +48,10 @@ class BookingCreateSerializer(serializers.ModelSerializer):
     def validate_check_in_date(self, value):  # Додано
         """Validate that check-in date is not in the past."""
         if value < date.today():
-            raise serializers.ValidationError(
-                "Check-in date cannot be in the past."
-            )
+            raise serializers.ValidationError("Check-in date cannot be in the past.")
         return value
 
     def validate(self, attrs):
-
         check_in = attrs["check_in_date"]
         check_out = attrs["check_out_date"]
         room = attrs["room"]
@@ -81,7 +79,6 @@ class BookingCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-
         user = self.context["request"].user
         room = validated_data["room"]
 

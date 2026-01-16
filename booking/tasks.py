@@ -1,5 +1,6 @@
 from celery import shared_task
 from django.utils.timezone import localdate
+
 from booking.models import Booking
 from notifications.tasks import send_telegram_notification
 
@@ -10,8 +11,7 @@ def mark_no_show_bookings():
     today = localdate()
 
     bookings = Booking.objects.filter(
-        status=Booking.BookingStatus.BOOKED,
-        check_in_date__lt=today
+        status=Booking.BookingStatus.BOOKED, check_in_date__lt=today
     ).select_related("room", "user")
     marked_count = 0
 
@@ -28,6 +28,7 @@ def mark_no_show_bookings():
 @shared_task
 def notify_no_show_telegram(booking_id):
     """Send detailed notification to Telegram about NO_SHOW booking"""
+<<<<<<< HEAD
     booking = Booking.objects.select_related('room', 'user').get(id=booking_id)
     message =  (
             f"⚠️ NO SHOW ALERT ⚠️\n"
@@ -44,3 +45,20 @@ def notify_no_show_telegram(booking_id):
             f"⏰ Marked at: {localdate()}"
         )
     send_telegram_notification.delay(message)
+=======
+    booking = Booking.objects.select_related("room", "user").get(id=booking_id)
+    return (
+        f"⚠️ NO SHOW ALERT ⚠️\n"
+        f"\n"
+        f"📋 Booking ID: {booking.id}\n"
+        f"🚪 Room: {booking.room.number} ({booking.room.type})\n"
+        f"👤 Guest: {booking.user.first_name} {booking.user.last_name}\n"
+        f"📧 Email: {booking.user.email}\n"
+        f"📅 Check-in Date: {booking.check_in_date}\n"
+        f"📅 Check-out Date: {booking.check_out_date}\n"
+        f"💰 Price per night: ${booking.price_per_night}\n"
+        f"📊 Status: {booking.status}\n"
+        f"\n"
+        f"⏰ Marked at: {localdate()}"
+    )
+>>>>>>> ea915b1 (style: format and lint code)

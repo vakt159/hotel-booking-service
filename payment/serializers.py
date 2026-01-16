@@ -14,10 +14,4 @@ class PaymentSerializer(serializers.ModelSerializer):
             "money_to_pay",
             "session_url",
         )
-        read_only_fields = (
-            "id",
-            "money_to_pay",
-            "status",
-            "session_url",
-            "type"
-        )
+        read_only_fields = ("id", "money_to_pay", "status", "session_url", "type")
