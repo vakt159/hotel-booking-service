@@ -39,6 +39,7 @@ urlpatterns = [
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
+    path("api/payments/", include("payment.urls"), name="payments"),
 
     path("__debug__/", include("debug_toolbar.urls")),
 
