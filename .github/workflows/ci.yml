@@ -49,9 +49,9 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB || test_db }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER || test_user }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD || test_password}}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -100,10 +100,10 @@ jobs:
 
       - name: Run Django Tests
         env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY || very_super_strong_secure_key }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB || test_db }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER || test_user }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD || test_password }}
           POSTGRES_HOST: postgres
           POSTGRES_PORT: 5432
           REDIS_HOST: redis
