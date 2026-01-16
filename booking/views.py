@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, status
@@ -15,6 +16,8 @@ from booking.serializers import (
     BookingReadSerializer,
     BookingCreateSerializer
 )
+from payment.services.payment_service import create_booking_payment
+from payment.services.stripe_service import create_checkout_session
 
 
 class BookingViewSet(viewsets.ModelViewSet):
@@ -42,6 +45,22 @@ class BookingViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         booking = serializer.save()
+
+        payment = create_booking_payment(booking)
+
+        if payment:
+            success_url = request.build_absolute_uri(
+                reverse("payments:success")
+            )
+            cancel_url = request.build_absolute_uri(
+                reverse("payments:cancel")
+            )
+
+            create_checkout_session(
+                payment=payment,
+                success_url=success_url,
+                cancel_url=cancel_url,
+            )
 
         response_serializer = BookingReadSerializer(booking)
         return Response(
