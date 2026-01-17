@@ -3,7 +3,6 @@ from datetime import timedelta
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils import timezone
-
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -26,7 +25,9 @@ class BookingFlowsTests(APITestCase):
             capacity=2,
         )
 
-    def create_booking(self, booking_status=Booking.BookingStatus.BOOKED, check_in_offset_days=5):
+    def create_booking(
+        self, booking_status=Booking.BookingStatus.BOOKED, check_in_offset_days=5
+    ):
         today = timezone.localdate()
         booking = Booking.objects.create(
             room=self.room,

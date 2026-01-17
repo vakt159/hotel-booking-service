@@ -1,4 +1,5 @@
 import os
+
 import requests
 from dotenv import load_dotenv
 
@@ -27,4 +28,4 @@ def send_message_to_all(text: str) -> None:
                 timeout=10,
             )
         except Exception as e:
-            print(f"Failed to send to {sub.chat_id}: {e}")
+            print(f"Failed to send to {sub.chat_id}: {e}")  # noqa: T201

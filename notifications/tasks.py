@@ -1,13 +1,16 @@
 import os
-import requests
 
+import requests
 from celery import shared_task
-from django.conf import settings
 
 from notifications.models import TelegramSubscriber
 
 
-@shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={"max_retries": 3, "countdown": 10})
+@shared_task(
+    bind=True,
+    autoretry_for=(Exception,),
+    retry_kwargs={"max_retries": 3, "countdown": 10},
+)
 def send_telegram_notification(self, message: str):
     """
     Send notification message to all subscribed Telegram admins

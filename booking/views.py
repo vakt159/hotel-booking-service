@@ -1,26 +1,21 @@
-from django.urls import reverse
 from datetime import datetime, time, timedelta
+
 from django.utils import timezone
-from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import viewsets, status
-from rest_framework.response import Response
 from drf_spectacular.utils import (
-    extend_schema,
     OpenApiParameter,
     OpenApiTypes,
+    extend_schema,
 )
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from booking.filters import BookingFilter
 from booking.models import Booking
-from booking.serializers import (
-    BookingReadSerializer,
-    BookingCreateSerializer
-)
-from payment.services.payment_service import create_booking_payment
-from payment.services.stripe_service import create_checkout_session
+from booking.serializers import BookingCreateSerializer, BookingReadSerializer
 
 
 class BookingViewSet(viewsets.ModelViewSet):
@@ -66,18 +61,15 @@ class BookingViewSet(viewsets.ModelViewSet):
         #     )
 
         response_serializer = BookingReadSerializer(booking)
-        return Response(
-            response_serializer.data,
-            status=status.HTTP_201_CREATED
-        )
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
     @extend_schema(
         summary="List bookings",
         description=(
-                "Retrieve a list of bookings.\n\n"
-                "- Regular users see only their own bookings.\n"
-                "- Staff users see all bookings.\n"
-                "- Supports filtering by user, room, status, date range and room type."
+            "Retrieve a list of bookings.\n\n"
+            "- Regular users see only their own bookings.\n"
+            "- Staff users see all bookings.\n"
+            "- Supports filtering by user, room, status, date range and room type."
         ),
         parameters=[
             OpenApiParameter(
@@ -174,7 +166,7 @@ class BookingViewSet(viewsets.ModelViewSet):
             )
 
         # hook: cancellation fee if <24h before check-in
-        # (поки Payment Service немає у нас — просто TODO)
+        # TODO: implement Payment Service
         check_in_dt = timezone.make_aware(
             datetime.combine(booking.check_in_date, time.min)
         )

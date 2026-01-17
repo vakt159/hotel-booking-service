@@ -1,18 +1,18 @@
 from datetime import timedelta
 
 from django.utils.dateparse import parse_date
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from django_filters.rest_framework import DjangoFilterBackend
 
 from booking.models import Booking
 from room.models import Room
-from room.serializers import RoomSerializer, RoomCalendarSerializer
 from room.permissions import IsAdminOrReadOnly
+from room.serializers import RoomCalendarSerializer, RoomSerializer
 
 
 class RoomViewSet(ModelViewSet):
@@ -57,12 +57,12 @@ class RoomViewSet(ModelViewSet):
             },
         },
         description=(
-                "Get room availability calendar for a given date range.\n\n"
-                "Only bookings with status BOOKED or ACTIVE are considered as occupying dates. "
-                "Availability is calculated per day."
+            "Get room availability calendar for a given date range.\n\n"
+            "Only bookings with status BOOKED or ACTIVE are considered as occupying dates. "
+            "Availability is calculated per day."
         ),
     )
-    @action(methods=["GET"], detail=True, url_path="calendar",filter_backends=[])
+    @action(methods=["GET"], detail=True, url_path="calendar", filter_backends=[])
     def get_calendar(self, request, pk=None):
         room = self.get_object()
 
@@ -92,8 +92,7 @@ class RoomViewSet(ModelViewSet):
 
         bookings = Booking.objects.filter(
             room=room,
-            status__in=[Booking.BookingStatus.BOOKED,
-                        Booking.BookingStatus.ACTIVE],
+            status__in=[Booking.BookingStatus.BOOKED, Booking.BookingStatus.ACTIVE],
             check_in_date__lt=date_to + timedelta(days=1),
             check_out_date__gt=date_from,
         )
@@ -108,10 +107,12 @@ class RoomViewSet(ModelViewSet):
         calendar = []
         current_date = date_from
         while current_date <= date_to:
-            calendar.append({
-                "date": current_date,
-                "available": current_date not in booked_dates,
-            })
+            calendar.append(
+                {
+                    "date": current_date,
+                    "available": current_date not in booked_dates,
+                }
+            )
             current_date += timedelta(days=1)
 
         serializer = RoomCalendarSerializer(calendar, many=True)

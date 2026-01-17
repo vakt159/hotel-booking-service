@@ -3,9 +3,7 @@ from payment.models import Payment
 
 
 def create_booking_payment(booking):
-    if booking.payments.filter(
-        status=Payment.PaymentStatus.PENDING
-    ).exists():
+    if booking.payments.filter(status=Payment.PaymentStatus.PENDING).exists():
         raise PendingPaymentExists()
 
     nights = (booking.check_out_date - booking.check_in_date).days

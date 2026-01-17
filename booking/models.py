@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models import ForeignKey, Q, F
+from django.db.models import F, ForeignKey, Q
 
 from room.models import Room
 
@@ -14,8 +14,9 @@ class Booking(models.Model):
         NO_SHOW = "No show"
 
     room = ForeignKey(Room, on_delete=models.CASCADE, related_name="bookings")
-    user = ForeignKey(get_user_model(), on_delete=models.CASCADE,
-                      related_name="bookings")
+    user = ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="bookings"
+    )
     check_in_date = models.DateField()
     check_out_date = models.DateField()
     actual_check_out_date = models.DateField(null=True)
@@ -26,6 +27,6 @@ class Booking(models.Model):
         constraints = [
             models.CheckConstraint(
                 check=Q(check_out_date__gt=F("check_in_date")),
-                name = "check_out_after_check_in",
+                name="check_out_after_check_in",
             ),
         ]
